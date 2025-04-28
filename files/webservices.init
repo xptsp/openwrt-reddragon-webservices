@@ -1,0 +1,26 @@
+#!/bin/sh /etc/rc.common
+START=50
+DEBUG=0
+
+start() {
+	OLD_CRT=$(ls -l /etc/ssl/acme_cert.crt 2> /dev/null | awk '{print $NF}')
+	[[ "${DEBUG}" -eq 1 ]] && echo "OLD_CRT = ${OLD_CRT}"
+	OLD_KEY=$(ls -l /etc/ssl/acme_cert.key 2> /dev/null | awk '{print $NF}')
+	[[ "${DEBUG}" -eq 1 ]] && echo "OLD_KEY = ${OLD_KEY}"
+	CUR_CRT=$(ls /etc/ssl/acme/*.fullchain.crt | head -1)
+	[[ "${DEBUG}" -eq 1 ]] && echo "CUR_CRT = ${CUR_CRT}"
+	CUR_KEY=$(ls /etc/ssl/acme/*.key | head -1)
+	[[ "${DEBUG}" -eq 1 ]] && echo "CUR_KEY = ${CUR_KEY}"
+	[[ "${OLD_KEY}" == "${CUR_KEY}" && "${OLD_CRT}" == "${CUR_CRT}" ]] && exit 0
+	[[ "${DEBUG}" -eq 1 ]] && echo "1"
+	if [[ -z "${CUR_KEY}" ]]; then
+		CUR_CRT=/etc/nginx/conf.d/_lan.crt
+		CUR_KEY=/etc/nginx/conf.d/_lan.key
+	fi
+	[[ "${DEBUG}" -eq 1 ]] && echo "2"
+	test -e /etc/ssl/acme_ssl.crt && rm /etc/ssl/acme_ssl.crt
+	test -e /etc/ssl/acme_ssl.key && rm /etc/ssl/acme_ssl.key
+	ln -sf ${CUR_CRT} /etc/ssl/acme_cert.crt
+	ln -sf ${CUR_KEY} /etc/ssl/acme_cert.key
+	exit 0
+}

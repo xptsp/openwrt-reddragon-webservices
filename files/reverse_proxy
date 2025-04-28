@@ -1,0 +1,9 @@
+listen 443 ssl;
+listen [::]:443;
+http2 on;
+include restrict_locally;
+ssl_certificate /etc/ssl/acme_cert.crt;
+ssl_certificate_key /etc/ssl/acme_cert.key;
+ssl_session_cache shared:SSL:32k;
+ssl_session_timeout 64m;
+access_log off; # logd openwrt;
