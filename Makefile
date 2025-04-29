@@ -38,13 +38,13 @@ define Package/reddragon-webservices/install
 	$(INSTALL_DATA) ./files/home.html $(1)/www/home.html
 
 	$(INSTALL_DIR) $(1)/www/cgi-bin
-	$(INSTALL_BIN) ./files/home $(1)/www/cgi-bin/home
+	$(INSTALL_BIN) ./files/home.cgi $(1)/www/cgi-bin/home
 
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/webservices.init $(1)/etc/init.d/webservices
 
 	$(INSTALL_DIR) $(1)/www/icons
-	$(INSTALL_DATA) ./files/icons/* $(1)/www/icons/
+	$(INSTALL_DATA) ./icons/* $(1)/www/icons/
 
 	$(INSTALL_DIR) $(1)/etc/nginx/
 	$(INSTALL_DATA) ./files/reverse_proxy $(1)/etc/nginx/reverse_proxy
