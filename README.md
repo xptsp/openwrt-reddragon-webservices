@@ -13,12 +13,12 @@ In the "location" option, there NEEDS to be a hash-tag ("#") followed by a short
 
 # Desktop Screenshot
 
-NOTE: This screenshot was taken on my computer, which has 1920x1080 resolution.
+NOTE: This screenshot was taken on my computer (image size is 1920x872).
 
-![Desktop](https://github.com/xptsp/openwrt-reddragon-webservices/blob/main/desktop.jpg?raw=true)
+<img src="https://github.com/xptsp/openwrt-reddragon-webservices/blob/main/desktop.jpg?raw=true" width="320" height="148" />
 
 # Mobile Screenshot
 
-NOTE: This screenshot was taken on my phone in portrait mode, which has a 1080 pixel width screen.
+NOTE: This screenshot was taken on my phone in portrait mode (image size is 1080x1529).
 
-![Mobile](https://github.com/xptsp/openwrt-reddragon-webservices/blob/main/mobile.jpg?raw=true)
+<img src="https://github.com/xptsp/openwrt-reddragon-webservices/blob/main/mobile.jpg?raw=true" width="180" height="334" />

@@ -4,6 +4,9 @@ ucis = require "luci.model.uci".cursor_state()
 compress = true
 compressed = ""
 
+------------------------------------------------------------
+--- Necessary functions for our code:
+------------------------------------------------------------
 function file_exists(name)
 	local f=io.open(name,"r")
 	if f~=nil then io.close(f) return true else return false end
@@ -16,6 +19,34 @@ function wprint(s)
 	end
 end
 
+------------------------------------------------------------
+--- Get number of grid elements we have:
+------------------------------------------------------------
+count = 0
+old_compress = compress
+compress = true
+uci:load('nginx')
+uci:foreach('nginx', 'server', function(s)
+	if s['include'] == 'reverse_proxy' then		
+		comment = string.match(s['location'], '#.*')
+		comment = comment:gsub('\#\ ', '')
+		filename = '/icons/' .. s['.name'] .. '.svg'
+		if not file_exists('/www' .. filename) then
+			filename = '/icons/' .. s['.name'] .. '.png'
+		end
+		wprint('			<div><a href="https://' .. s["server_name"] .. '"><img src="' .. filename .. '" /><p>' .. comment .. '</p></a></div>')
+		count = count +1
+	end
+end)
+compress = old_compress
+grid_data = compressed
+compressed = ""
+max_desk = count / 4
+max_mobile = count / 3
+
+------------------------------------------------------------
+--- Output the entire HTML block
+------------------------------------------------------------
 print('Content-type: Text/html')
 print('')
 wprint('<!DOCTYPE html>')
@@ -33,6 +64,9 @@ wprint('			-moz-background-size: cover;')
 wprint('			-o-background-size: cover;')
 wprint('			background-size: cover;')
 wprint('			min-height: 100vh;')
+wprint('			background-repeat: no-repeat;')
+wprint('			background-attachment: fixed;')
+wprint('			background-size: 100% 100%;')
 wprint('			box-sizing: border-box;')
 wprint('			display: flex;')
 wprint('			align-items: top;')
@@ -48,7 +82,7 @@ wprint('			flex: 0 0 auto;')
 wprint('			perspective: 600px;')
 wprint('			display: grid;')
 wprint('			grid-template-columns: repeat(4, 192px);')
-wprint('			grid-template-rows: repeat(8, 192px);')
+wprint('			grid-template-rows: repeat(' .. max_desk .. ', 192px);')
 wprint('			grid-gap: 15px;')
 wprint('			max-width: 4600px;')
 wprint('		}')
@@ -81,8 +115,8 @@ wprint('			overflow: hidden;')
 wprint('		}')
 wprint('		@media (max-width: 800px) {')
 wprint('			.grid {')
-wprint('				grid-template-columns: repeat(3, 140px);')
-wprint('				grid-template-rows: repeat(10, 150px);')
+wprint('				grid-template-columns: repeat(3, 135px);')
+wprint('				grid-template-rows: repeat(' .. max_mobile .. ', 150px);')
 wprint('				grid-gap: 10px;')
 wprint('			}')
 wprint('			.grid div img {')
@@ -100,20 +134,7 @@ wprint('	<div class="title">')
 wprint('		<div class="title">')
 wprint('			<p><h1>Available Services</h1></p>')
 wprint('		</div>')
-wprint('		<div class="grid">')
-uci:load('nginx')
-uci:foreach('nginx', 'server', function(s)
-	if s['include'] == 'reverse_proxy' then		
-		comment = string.match(s['location'], '#.*')
-		comment = comment:gsub('\#\ ', '')
-		filename = '/icons/' .. s['.name'] .. '.svg'
-		if not file_exists('/www' .. filename) then
-			filename = '/icons/' .. s['.name'] .. '.png'
-		end
-		wprint('			<div><a href="https://' .. s["server_name"] .. '"><img src="' .. filename .. '" /><p>' .. comment .. '</p></a></div>')
-	end
-end)
-wprint('		</div>')
+wprint('		<div class="grid">' .. grid_data .. '</div>')
 wprint('	</div>')
 wprint('</body></html>')
 print(compressed)
