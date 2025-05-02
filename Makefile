@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=reddragon-webservices
-PKG_VERSION:=0.3
+PKG_VERSION:=0.4
 PKG_RELEASE:=1
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_MAINTAINER:=Douglas Orend <doug.orend2@gmail.com>
@@ -12,7 +12,7 @@ define Package/reddragon-webservices
 	SECTION:=utils
 	CATEGORY:=Utilities
 	TITLE:=RedDragon Web Services
-	DEPENDS:=+luci-theme-argon +bash
+	DEPENDS:=+nginx-ssl +bash
 	PKGARCH:=all
 endef
 
@@ -33,6 +33,14 @@ endef
 define Build/Compile
 endef
 
+define Package/reddragon-webservices/conffiles
+/etc/config/webservices
+/etc/ssl/acme_cert.crt
+/etc/ssl/acme_cert.key
+/etc/nginx/conf.d/_lan.crt
+/etc/nginx/conf.d/_lan.key
+endef
+
 define Package/reddragon-webservices/install
 	$(INSTALL_DIR) $(1)/www/
 	$(INSTALL_DATA) ./files/home.html $(1)/www/home.html
@@ -51,6 +59,9 @@ define Package/reddragon-webservices/install
 
 	$(INSTALL_DIR) $(1)/etc/nginx/conf.d
 	$(INSTALL_DATA) ./files/services.locations $(1)/etc/nginx/conf.d
+
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_DATA) ./files/webservices.config $(1)/etc/config/webservices
 endef
 
 $(eval $(call BuildPackage,reddragon-webservices))
