@@ -3,7 +3,7 @@
 This package dynamically shows any services that are proxied by Nginx on OpenWrt, as well as any other services 
 that adminstrators chose to include.
 
-In ```/etc/config/nginx', proxied services must be listed like such: 
+In ```/etc/config/nginx```, proxied services must be listed like such: 
 
     config server 'openwrt'
 	       option include 'reverse_proxy'
